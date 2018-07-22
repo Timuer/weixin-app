@@ -9,17 +9,17 @@ const app = new Koa()
 const auth = ctx => {
     const q = ctx.request.query
     const token = config.wechat.token
-    // console.log(token)
+    console.log(token)
     const nonce = q.nonce
-    // console.log(nonce)
+    console.log(nonce)
     const timestamp = q.timestamp
-    // console.log(timestamp)
+    console.log(timestamp)
     const s = sha1([token, nonce, timestamp].sort().join(''))
     const signature = q.signature
-    // console.log(s)
-    // console.log(signature)
+    console.log(s)
+    console.log(signature)
     const echostr = q.echostr
-    // console.log(ecostr)
+    console.log(echostr)
     if (s == signature) {
         ctx.response.body = echostr
     } else {
