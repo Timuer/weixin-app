@@ -21,7 +21,7 @@ const auth = ctx => {
     const echostr = q.echostr
     // console.log(ecostr)
     if (s == signature) {
-        ctx.response.body = ecostr
+        ctx.response.body = echostr
     } else {
         ctx.response.body = 'Wrong'
     }
