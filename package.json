@@ -1,0 +1,27 @@
+{
+  "name": "weixin-app",
+  "version": "1.0.0",
+  "description": "provide background service to my weixin application",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timuer/weixin-app.git"
+  },
+  "keywords": [
+    "weixin"
+  ],
+  "author": "timuer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Timuer/weixin-app/issues"
+  },
+  "homepage": "https://github.com/Timuer/weixin-app#readme",
+  "dependencies": {
+    "koa": "^2.5.2",
+    "koa-route": "^3.2.0",
+    "koa-static": "^5.0.0"
+  }
+}
