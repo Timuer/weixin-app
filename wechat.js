@@ -52,7 +52,7 @@ class Wechat {
 
     async saveAccessToken(accessToken) {
         const token = accessToken.access_token
-        const expires = Date.now() + (access_token.expires_in - 20) * 1000
+        const expires = Date.now() + (token.expires_in - 20) * 1000
         const obj = {
             value: token,
             invalid_time: expires
