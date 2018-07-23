@@ -1,7 +1,7 @@
 const fs = require('fs')
 const {promisify} = require('util')
 const readFile = promisify(fs.readFile)
-const Request = require('./utils/request')
+const rp = require('request-promise')
 
 class Wechat {
     constructor(config) {
@@ -45,8 +45,7 @@ class Wechat {
 
     async updatedAccessToken() {
         console.log('update token')
-        const r = new Request(this.access_token_url)
-        const data = await r.get()
+        const data = await rp(this.access_token_url)
         console.log(data.toString())
         return JSON.parse(data.toString())
     }

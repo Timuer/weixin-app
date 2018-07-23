@@ -41,4 +41,4 @@ app.use(auth)
 app.use(sendMessage)
 app.listen(80)
 
-console.log('start server on 8000...')
+console.log('start server on 80...')
