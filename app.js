@@ -39,6 +39,6 @@ async function sendMessage(ctx) {
 
 app.use(auth)
 app.use(sendMessage)
-app.listen(8000)
+app.listen(80)
 
 console.log('start server on 8000...')
