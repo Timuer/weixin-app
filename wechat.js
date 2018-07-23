@@ -1,6 +1,7 @@
 const fs = require('fs')
 const {promisify} = require('util')
 const readFile = promisify(fs.readFile)
+const writeFile = promisify(fs.writeFile)
 const rp = require('request-promise')
 
 class Wechat {
@@ -58,7 +59,7 @@ class Wechat {
             invalid_time: expires
         }
         const js = JSON.stringify(obj)
-        await fs.writeFile(this.access_token_path, js)
+        await writeFile(this.access_token_path, js)
     }
 }
 
