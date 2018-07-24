@@ -44,5 +44,5 @@ function formatXMLObj(xmlObj) {
             result[key] = arr
         }
     }
-
+    return result
 }
