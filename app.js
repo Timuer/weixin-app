@@ -24,6 +24,8 @@ async function main(ctx) {
     let res = ctx.response
     if (req.method == 'GET') {
         wechat.authenticate(ctx)
+        const accessToken = await wechat.getAccessToken()
+        console.log('accessToken: ', accessToken)
     } else if (req.method == 'POST') {
         console.log('receive message from weixin...')
         let body = req.rawBody
@@ -32,8 +34,6 @@ async function main(ctx) {
         console.log('parsed info: ', parsedMessage)
         res.body = await buildRetBody(parsedMessage)
     }
-    // const accessToken = await wechat.getAccessToken()
-    // console.log('accessToken: ', accessToken)
 }
 
 async function buildRetBody(message) {
