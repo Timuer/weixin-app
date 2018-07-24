@@ -21,7 +21,7 @@ async function main(ctx) {
         wechat.authenticate(ctx)
     } else if (req.method == 'POST') {
         console.log('receive message from weixin...')
-        let body = req.body
+        let body = req.rawBody
         console.log('body: ', body)
         await parseXML(body)
         res.body = 'ok'
