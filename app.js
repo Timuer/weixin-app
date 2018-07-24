@@ -34,7 +34,7 @@ async function main(ctx) {
 }
 
 app.use(bodyParser({
-    onerror: (err, ctx) {
+    onerror: (err, ctx) => {
         ctx.throw('body parse error', 422)
     }
 }))
