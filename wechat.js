@@ -1,4 +1,5 @@
 const fs = require('fs')
+const sha1 = require('sha1')
 const {promisify} = require('util')
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)

@@ -2,7 +2,7 @@ const config = require('./config')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 
-const sha1 = require('sha1')
+
 const route = require('koa-route')
 const serve = require('koa-static')
 
@@ -11,8 +11,6 @@ const {parseXML} = require('./utils')
 
 
 const app = new Koa()
-
-
 
 async function main(ctx) {
     const wechat = new Wechat(config.wechat)
