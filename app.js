@@ -18,14 +18,16 @@ async function main(ctx) {
     const wechat = new Wechat(config.wechat)
     let req = ctx.request
     let res = ctx.response
-    if (wechat.isFromWechat(req)) {
+    if (!wechat.isFromWechat(req)) {
         res.status = 403
         res.body = 'Not from developers'
         return
     }
     if (req.method == 'GET') {
+        console.log('authenticate ok')
         res.body = req.query.echostr
     } else if (req.method == 'POST') {
+        console.log('receive message from weixin...')
         let body = req.body
         console.log('body: ', body)
         await parseXML(body)
