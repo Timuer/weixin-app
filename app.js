@@ -14,7 +14,7 @@ async function parse(ctx, next) {
         limit: '1mb',
         encoding: 'utf-8'
     })
-    await next
+    await next()
 }
 
 async function main(ctx) {
