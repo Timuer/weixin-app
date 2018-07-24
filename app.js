@@ -46,15 +46,17 @@ async function buildRetBody(message) {
         let content = "Hi Baby"
         obj = {
             xml: {
-                ToUserName: `< ![CDATA['${toUser}']]`,
-                FromUserName: `< ![CDATA['${fromUser}']]`,
-                CreateTime: `< ![CDATA['${now}']]`,
-                MsgType: `< ![CDATA['${type}']]`,
-                Content: `< ![CDATA['${content}']]`,
+                ToUserName: `< ![CDATA[${toUser}]]`,
+                FromUserName: `< ![CDATA[${fromUser}]]`,
+                CreateTime: `< ![CDATA[${now}]]`,
+                MsgType: `< ![CDATA[${type}]]`,
+                Content: `< ![CDATA[${content}]]`,
             }
         }
     }
-    return await buildXML(obj)
+    let xml = await buildXML(obj)
+    console.log('ret body: ', xml)
+    return xml
 }
 
 app.use(parse)
