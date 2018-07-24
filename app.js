@@ -1,14 +1,21 @@
 const config = require('./config')
 const Koa = require('koa')
-
-const route = require('koa-route')
-const serve = require('koa-static')
+const getRawBody = require('raw-body')
 
 const Wechat = require('./wechat')
-const {parseXML, getPostData} = require('./utils')
+const {parseXML} = require('./utils')
 
 
 const app = new Koa()
+
+async function parse(ctx, next) {
+    ctx.request.rawBody = await getRawBody(ctx.req, {
+        length: ctx.req.headers['content-length'],
+        limit: '1mb',
+        encoding: 'utf-8'
+    })
+    await next
+}
 
 async function main(ctx) {
     console.log(`received request url http://www.timuer.top${ctx.request.path}`)
@@ -28,7 +35,7 @@ async function main(ctx) {
     // console.log('accessToken: ', accessToken)
 }
 
-app.use(getPostData)
+app.use(parse)
 app.use(main)
 app.listen(80)
 
