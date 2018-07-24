@@ -1,44 +1,44 @@
 const config = require('./config')
 const Koa = require('koa')
+const bodyParser = require('koa-bodyparser')
 
 const sha1 = require('sha1')
 const route = require('koa-route')
 const serve = require('koa-static')
 
 const Wechat = require('./wechat')
+const {parseXML} = require('./utils')
+
 
 const app = new Koa()
 
-async function auth(ctx, next) {
+
+
+async function main(ctx) {
     const wechat = new Wechat(config.wechat)
-    const q = ctx.request.query
-    const token = wechat.token
-    const nonce = q.nonce
-    const timestamp = q.timestamp
-    const signature = q.signature
-    const echostr = q.echostr
-    if (nonce && timestamp && signature && echostr) {
-        const s = sha1([token, nonce, timestamp].sort().join(''))
-        // console.log('querystr', ctx.request.querystring)
-        // console.log('arguments: ', token, nonce, timestamp, s, signature, echostr)
-        if (s == signature) {
-            ctx.response.body = echostr
-        } else {
-            ctx.response.body = 'Wrong'
-        }    
+    let req = ctx.request
+    let res = ctx.response
+    if (wechat.isFromWechat(req)) {
+        res.status = 403
+        res.body = 'Not from developers'
+        return
     }
-    await next() 
+    if (req.method == 'GET') {
+        res.body = req.query.echostr
+    } else if (req.method == 'POST') {
+        let body = ctx.request.body
+        await parseXML(body)
+    }
+    // const accessToken = await wechat.getAccessToken()
+    // console.log('accessToken: ', accessToken)
 }
 
-async function sendMessage(ctx) {
-    console.log('send message')
-    const wechat = new Wechat(config.wechat)
-    const accessToken = await wechat.getAccessToken()
-    console.log('accessToken: ', accessToken)
-}
-
-app.use(auth)
-app.use(sendMessage)
+app.use(bodyParser({
+    onerror: (err, ctx) {
+        ctx.throw('body parse error', 422)
+    }
+}))
+app.use(main)
 app.listen(80)
 
 console.log('start server on 80...')

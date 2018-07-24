@@ -13,6 +13,27 @@ class Wechat {
         this.access_token_url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appSecret}`
     }
 
+    isFromWechat(request) {
+        // 获取接入验证信息
+        const q = request.query
+        const token = this.token
+        const nonce = q.nonce
+        const timestamp = q.timestamp
+        const signature = q.signature
+        const echostr = q.echostr
+        // 验证微信接入
+        if (nonce && timestamp && signature && echostr) {
+            const s = sha1([token, nonce, timestamp].sort().join(''))
+            // console.log('querystr', ctx.request.querystring)
+            // console.log('arguments: ', token, nonce, timestamp, s, signature, echostr)
+            if (s == signature) {
+                return true
+            } else {
+                return false
+            }    
+        }
+    }
+
     async getAccessToken() {
         const data = await readFile(this.access_token_path)
         try {
