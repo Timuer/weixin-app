@@ -9,7 +9,7 @@ module.exports.parseXML = async function(xmlStr) {
 }
 
 module.exports.buildXML = async function(obj) {
-    let builder = new xml2js.Builder()
+    let builder = new xml2js.Builder({cdata:true})
     return await builder.buildObject(obj)
 }
 
