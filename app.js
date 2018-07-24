@@ -3,7 +3,7 @@ const Koa = require('koa')
 const getRawBody = require('raw-body')
 
 const Wechat = require('./wechat')
-const {parseXML} = require('./utils')
+const {parseXML, buildXML} = require('./utils')
 
 
 const app = new Koa()
@@ -27,12 +27,33 @@ async function main(ctx) {
     } else if (req.method == 'POST') {
         console.log('receive message from weixin...')
         let body = req.rawBody
-        console.log('body: ', body)
-        await parseXML(body)
-        res.body = 'ok'
+        let parsedMessage = await parseXML(body)
+        console.log('received info: ', parsedMessage)
+        res.body = await buildRetBody(parsedMessage)
     }
     // const accessToken = await wechat.getAccessToken()
     // console.log('accessToken: ', accessToken)
+}
+
+async function buildRetBody(message) {
+    let toUser = message.FromUserName
+    let fromUser = message.ToUserName
+    let now = Date.now().getTime()
+    let type = message.MsgType
+    let obj
+    if (type == 'text') {
+        let content = "Hi Baby"
+        obj = {
+            xml: {
+                ToUserName: `< !CDATA[${toUser}]`,
+                FromUserName: `< !CDATA[${fromUser}]`,
+                CreateTime: `< !CDATA[${now}]`,
+                MsgType: `< !CDATA[${type}]`,
+                content: `< !CDATA[${content}]`,
+            }
+        }
+    }
+    return await buildXML(obj)
 }
 
 app.use(parse)
