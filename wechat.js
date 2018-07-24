@@ -14,6 +14,19 @@ class Wechat {
         this.access_token_url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appSecret}`
     }
 
+    authenticate(ctx) {
+        const req = ctx.request
+        const res = ctx.response
+        if (!this.isFromWechat(req)) {
+            console.log('error:Not from developers')
+            res.status = 403
+            res.body = 'Not from developers'
+            return
+        } else {
+            res.body = req.query.echostr
+        }
+    }
+
     isFromWechat(request) {
         // 获取接入验证信息
         const q = request.query

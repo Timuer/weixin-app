@@ -17,15 +17,8 @@ async function main(ctx) {
     const wechat = new Wechat(config.wechat)
     let req = ctx.request
     let res = ctx.response
-    if (!wechat.isFromWechat(req)) {
-        console.log('error:Not from developers')
-        res.status = 403
-        res.body = 'Not from developers'
-        return
-    }
     if (req.method == 'GET') {
-        console.log('authenticate ok')
-        res.body = req.query.echostr
+        wechat.authenticate(ctx)
     } else if (req.method == 'POST') {
         console.log('receive message from weixin...')
         let body = req.body
