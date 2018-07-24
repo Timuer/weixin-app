@@ -46,11 +46,11 @@ async function buildRetBody(message) {
         let content = "Hi Baby"
         obj = {
             xml: {
-                ToUserName: `[${toUser}]`,
-                FromUserName: `[${fromUser}]`,
-                CreateTime: `[${now}]`,
-                MsgType: `[${type}]`,
-                Content: `[${content}]`,
+                ToUserName: `&lt;![CDATA[${toUser}]]&gt;`,
+                FromUserName: `&lt;![CDATA[${fromUser}]&gt;`,
+                CreateTime: `&lt;![CDATA[${now}]&gt;`,
+                MsgType: `&lt;![CDATA[${type}]&gt;`,
+                Content: `&lt;![CDATA[${content}]&gt;`,
             }
         }
     }
