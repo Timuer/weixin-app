@@ -1,13 +1,11 @@
 const config = require('./config')
 const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
-
 
 const route = require('koa-route')
 const serve = require('koa-static')
 
 const Wechat = require('./wechat')
-const {parseXML} = require('./utils')
+const {parseXML, getPostData} = require('./utils')
 
 
 const app = new Koa()
@@ -30,11 +28,7 @@ async function main(ctx) {
     // console.log('accessToken: ', accessToken)
 }
 
-app.use(bodyParser({
-    onerror: (err, ctx) => {
-        ctx.throw('body parse error', 422)
-    }
-}))
+app.use(getPostData)
 app.use(main)
 app.listen(80)
 
