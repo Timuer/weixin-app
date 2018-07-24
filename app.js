@@ -13,10 +13,12 @@ const {parseXML} = require('./utils')
 const app = new Koa()
 
 async function main(ctx) {
+    console.log('received request...')
     const wechat = new Wechat(config.wechat)
     let req = ctx.request
     let res = ctx.response
     if (!wechat.isFromWechat(req)) {
+        console.log('error:Not from developers')
         res.status = 403
         res.body = 'Not from developers'
         return
@@ -29,7 +31,7 @@ async function main(ctx) {
         let body = req.body
         console.log('body: ', body)
         await parseXML(body)
-        res.body = ''
+        res.body = 'ok'
     }
     // const accessToken = await wechat.getAccessToken()
     // console.log('accessToken: ', accessToken)
