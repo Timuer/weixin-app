@@ -27,8 +27,9 @@ async function main(ctx) {
     } else if (req.method == 'POST') {
         console.log('receive message from weixin...')
         let body = req.rawBody
+        console.log('request body: ', body)
         let parsedMessage = await parseXML(body)
-        console.log('received info: ', parsedMessage)
+        console.log('parsed info: ', parsedMessage)
         res.body = await buildRetBody(parsedMessage)
     }
     // const accessToken = await wechat.getAccessToken()
@@ -49,7 +50,7 @@ async function buildRetBody(message) {
                 FromUserName: `< ![CDATA['${fromUser}']]`,
                 CreateTime: `< ![CDATA['${now}']]`,
                 MsgType: `< ![CDATA['${type}']]`,
-                content: `< ![CDATA['${content}']]`,
+                Content: `< ![CDATA['${content}']]`,
             }
         }
     }
