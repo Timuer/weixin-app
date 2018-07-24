@@ -21,6 +21,7 @@ function formatXMLObj(xmlObj) {
             let item = xmlObj[key]
             if (!Array.isArray(item) || item.length == 0) {
                 // 微信返回的xml除了根元素xml，其他的元素值都为数组
+                result = formatXMLObj(item)
                 continue
             }
             if (item.length == 1) {
