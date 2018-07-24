@@ -38,18 +38,18 @@ async function main(ctx) {
 async function buildRetBody(message) {
     let toUser = message.FromUserName
     let fromUser = message.ToUserName
-    let now = Date.now().getTime()
+    let now = Date.now()
     let type = message.MsgType
     let obj
     if (type == 'text') {
         let content = "Hi Baby"
         obj = {
             xml: {
-                ToUserName: `< !CDATA[${toUser}]`,
-                FromUserName: `< !CDATA[${fromUser}]`,
-                CreateTime: `< !CDATA[${now}]`,
-                MsgType: `< !CDATA[${type}]`,
-                content: `< !CDATA[${content}]`,
+                ToUserName: `< ![CDATA['${toUser}']]`,
+                FromUserName: `< ![CDATA['${fromUser}']]`,
+                CreateTime: `< ![CDATA['${now}']]`,
+                MsgType: `< ![CDATA['${type}']]`,
+                content: `< ![CDATA['${content}']]`,
             }
         }
     }

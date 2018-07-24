@@ -14,35 +14,38 @@ module.exports.buildXML = async function(obj) {
 }
 
 function formatXMLObj(xmlObj) {
-    let keys = Object.keys(xmlObj)
     let result = {}
-    for (let key of keys) {
-        let item = xmlObj[key]
-        if (!Array.isArray(item) || item.length == 0) {
-            // 微信返回的xml除了根元素xml，其他的元素值都为数组
-            continue
-        }
-        if (item.length == 1) {
-            let val = item[0]
-            if (typeof val == 'object') {
-                result[key] = formatXMLObj(val)
-            } else {
-                val = (val || '').trim()
-                result[key] = val
+    if (typeof xmlObj == 'object') {
+        let keys = Object.keys(xmlObj)
+        for (let key of keys) {
+            let item = xmlObj[key]
+            if (!Array.isArray(item) || item.length == 0) {
+                // 微信返回的xml除了根元素xml，其他的元素值都为数组
+                continue
             }
-        } else {
-            let arr = []
-            for (let i = 0; i < item.length; i++) {
-                let val = item[i]
+            if (item.length == 1) {
+                let val = item[0]
                 if (typeof val == 'object') {
-                    arr.push(formatXMLObj(val))
+                    result[key] = formatXMLObj(val)
                 } else {
                     val = (val || '').trim()
-                    arr.push(val)
+                    result[key] = val
                 }
+            } else {
+                let arr = []
+                for (let i = 0; i < item.length; i++) {
+                    let val = item[i]
+                    if (typeof val == 'object') {
+                        arr.push(formatXMLObj(val))
+                    } else {
+                        val = (val || '').trim()
+                        arr.push(val)
+                    }
+                }
+                result[key] = arr
             }
-            result[key] = arr
         }
+    
     }
     return result
 }
