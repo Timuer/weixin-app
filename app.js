@@ -13,7 +13,7 @@ const {parseXML} = require('./utils')
 const app = new Koa()
 
 async function main(ctx) {
-    console.log('received request...')
+    console.log(`received request url http://www.timuer.top${ctx.request.path}`)
     const wechat = new Wechat(config.wechat)
     let req = ctx.request
     let res = ctx.response
