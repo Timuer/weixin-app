@@ -26,8 +26,10 @@ async function main(ctx) {
     if (req.method == 'GET') {
         res.body = req.query.echostr
     } else if (req.method == 'POST') {
-        let body = ctx.request.body
+        let body = req.body
+        console.log('body: ', body)
         await parseXML(body)
+        res.body = ''
     }
     // const accessToken = await wechat.getAccessToken()
     // console.log('accessToken: ', accessToken)
