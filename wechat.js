@@ -17,6 +17,7 @@ class Wechat {
         this.materials = {}
     }
 
+    // 微信接口对接验证
     authenticate(ctx) {
         const req = ctx.request
         const res = ctx.response
@@ -51,6 +52,7 @@ class Wechat {
         }
     }
 
+    // 获取access_token用于访问微信接口
     async getAccessToken() {
         const data = await readFile(this.access_token_path)
         try {
@@ -100,6 +102,7 @@ class Wechat {
         await writeFile(this.access_token_path, js)
     }
 
+    // 获取素材的media_id
     async getMediaId(materialPath) {
         let m = this.materials[materialPath]
         if (m && m.expires - Date.now() > 0) {
