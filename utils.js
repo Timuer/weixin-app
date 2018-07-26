@@ -1,6 +1,7 @@
 const {promisify} = require('util')
 const parseString = promisify(require('xml2js').parseString)
-const xml2js = require('xml2js')
+const ejs = require('ejs')
+const heredoc = require('heredoc')
 
 module.exports.parseXML = async function(xmlStr) {
     const xmlObj = await parseString(xmlStr)
@@ -8,10 +9,100 @@ module.exports.parseXML = async function(xmlStr) {
     return formated
 }
 
-module.exports.buildXML = async function(obj) {
-    let builder = new xml2js.Builder()
-    return await builder.buildObject(obj)
+class XMLMessageBuilder {
+    constructor() {
+        this.str = heredoc(function() {/*
+            <xml>
+                <ToUserName>
+                    < ![CDATA[<%= obj.toUser %>]]>
+                </ToUserName>
+                <FromUserName>
+                    < ![CDATA[<%= obj.fromUser %>]]>
+                </FromUserName>
+                <CreateTime>
+                    <%= obj.now %>
+                </CreateTime>
+                <MsgType>
+                    < ![CDATA[<%= obj.content.type %>]]>
+                </MsgType>
+                <% if (obj.content.type == 'text') { %>
+                    <Content>
+                        < ![CDATA[<%= obj.content.text %>]]>
+                    </Content>
+                <% } else if (obj.content.type == 'image') { %>
+                    <Image>
+                        <MediaId>
+                            < ![CDATA[<%= obj.content.media_id %>]]>
+                        </MediaId>
+                    </Image>
+                <% } else if (obj.content.type == 'voice') { %>
+                    <Voice>
+                        <MediaId>
+                            < ![CDATA[<%= obj.content.media_id %>]]>
+                        </MediaId>
+                    </Voice>
+                <% } else if (obj.content.type == 'video') { %>
+                    <Video>
+                        <MediaId>
+                            < ![CDATA[<%= obj.content.media_id %>]]>
+                        </MediaId>
+                        <Title>
+                            < ![CDATA[<%= obj.content.title %>]]>
+                        </Title>
+                        <Description>
+                            < ![CDATA[<%= obj.content.description %>]]>
+                        </Description>
+                    </Video>
+                <% } else if (obj.content.type == 'music') { %>
+                    <Music>
+                        <Title>
+                            < ![CDATA[<%= obj.content.title %>]]>
+                        </Title>
+                        <Description>
+                            < ![CDATA[<%= obj.content.description %>]]>
+                        </Description>
+                        <MusicUrl>
+                            < ![CDATA[<%= obj.content.music_url %>]]>
+                        </MusicUrl>
+                        <HQMusicUrl>
+                            < ![CDATA[<%= obj.content.hq_music_url %>]]>
+                        </HQMusicUrl>
+                        <ThumbMediaId>
+                            < ![CDATA[<%= obj.content.media_id %>]]>
+                        </ThumbMediaId>
+                    </Music>
+                <% } else if (obj.content.type == 'news') { %>
+                    <ArticleCount><%= obj.content.count %></ArticleCount>
+                    <Articles>
+                        <% for (let i = 0; i < obj.content.count; i++) { %>
+                            <item>
+                                <Title>
+                                    < ![CDATA[<%= obj.content.items[i].title %>]]>
+                                </Title>
+                                <Description>
+                                    < ![CDATA[<%= obj.content.items[i].description %>]]>
+                                </Description>
+                                <PicUrl>
+                                    < ![CDATA[<%= obj.content.items[i].picurl %>]]>
+                                </PicUrl>
+                                <Url>
+                                    < ![CDATA[<%= obj.content.items[i].url %>]]>
+                                </Url>
+                            </item>
+                        <% } %>
+                    </Articles>
+                <% } %>
+            </xml>
+        */})
+        this.template = ejs.compile(this.str)
+    }
+
+    build(obj) {
+        return this.template({obj: obj}).replace(/\s+/g, '')
+    }
 }
+
+module.exports.XMLMessageBuilder = XMLMessageBuilder
 
 function formatXMLObj(xmlObj) {
     let result = {}
@@ -49,4 +140,16 @@ function formatXMLObj(xmlObj) {
     
     }
     return result
+}
+
+module.exports.mime = (ext) => {
+    return {
+        txt: 'text/plain',
+        json: 'application/json',
+        html: 'text/html',
+        xml: 'application/xml',
+        jpg: 'image/jpeg',
+        png: 'image/png',
+        gif: 'image/gif',
+    }[ext]
 }

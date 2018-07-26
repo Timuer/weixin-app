@@ -1,9 +1,11 @@
 const fs = require('fs')
+const path = require('path')
 const sha1 = require('sha1')
 const {promisify} = require('util')
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 const rp = require('request-promise')
+const {mime} = require('./utils')
 
 class Wechat {
     constructor(config) {
@@ -12,6 +14,7 @@ class Wechat {
         this.token = config.token
         this.access_token_path = config.access_token_path
         this.access_token_url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appSecret}`
+        this.materials = {}
     }
 
     authenticate(ctx) {
@@ -95,6 +98,47 @@ class Wechat {
         }
         const js = JSON.stringify(obj)
         await writeFile(this.access_token_path, js)
+    }
+
+    async getMediaId(materialPath) {
+        let m = this.materials[materialPath]
+        if (m && m.expires - Date.now() > 0) {
+            return m.media_id
+        } else {
+            this.uploadMaterial(materialPath)
+        }
+    }
+
+    async uploadMaterial(materialPath) {
+        let access_token = await this.getAccessToken()
+        let name = path.basename(materialPath)
+        let ext = path.extname(materialPath).slice(1)
+        let type = mime(ext)
+        let upload_url = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${access_token}&type=${type}`
+        let options = {
+            method: 'POST',
+            uri: upload_url,
+            formData: {
+                file: {
+                    value: fs.createReadStream(materialPath),
+                    options: {
+                        filename: name,
+                        contentType: type,
+                    }
+                }
+            }
+        }
+        try {
+            let data = await rp(options)
+            console.log('upload response: ', data)
+            let obj = JSON.parse(data)
+            this.materials[materialPath] = {
+                expires: Date.now() + 3 * 24 * 3600,
+                media_id: obj.media_id
+            }
+        } catch(err) {
+            console.error(err)
+        }
     }
 }
 
